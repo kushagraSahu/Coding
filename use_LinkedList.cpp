@@ -1,9 +1,16 @@
 #include "LinkedList.h"
 int main(){
-	LinkedList L1;
+	LinkedList L1, L2;
 	L1.createLinkedList(L1.head);
 	L1.printList(L1.head);
-    cout << "Delete duplicates" << endl;
+	cout << endl;
+	L2.createLinkedList(L2.head);
+	L2.printList(L2.head);
+	cout << endl;
+    L1.mergeLL1intoLL2atAltPos(L1.head, L2.head);
+    L1.printList(L1.head);
+    cout << endl;
+ 	cout << "Delete duplicates" << endl;
 	L1.deleteDuplicatesFromSortedLL(L1.head);
 	L1.printList(L1.head);
 	cout << "Check Palindrome" << endl;

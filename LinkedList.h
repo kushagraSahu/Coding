@@ -133,6 +133,7 @@ class LinkedList{
         return;
     }
 
+    //Rotate a Linked List.
     void appendLastNelementsToFront(node *&head, int n){
         int len = length(head);
         if (n==len){
@@ -165,6 +166,35 @@ class LinkedList{
         return;
     }
 
+    bool LoopInLL(node *head){
+        node *temp1 = head;
+        node *temp2 = head;
+        while(temp1 && temp2){
+            temp1=temp1->next;
+            temp2=temp2->next->next;
+            if(temp1==temp2){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void mergeLL1intoLL2atAltPos(node *&head1, node *head2){
+        node *temp1=head1;
+        node *temp2=head2;
+        node *temp3, *temp4;
+        while(temp1 && temp2){
+            temp3=temp1->next;
+            temp4=temp2->next;
+            temp1->next=temp2;
+            if(temp3){
+                temp2->next=temp3;
+            }
+            temp1=temp3;
+            temp2=temp4;
+        }
+        return;
+    }
 };
 
 // Creating a Heterogenous Linked List: 1 a 2 b 3 c 4 d 5 g ...
