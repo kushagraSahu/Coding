@@ -195,6 +195,38 @@ class LinkedList{
         }
         return;
     }
+
+    //Creating partition for implementing Quicksort in LL.
+    int partition(node *&head, int start, int end){
+        node *pivot = findKthElement(head, end);
+        int i=start;
+        int j=end-1;
+        while(i<j){
+            //Finding index which has value > pivot.
+            while(findKthElement(head, i)->data < pivot->data){
+                i++;
+            }
+            //Finding index which has value < pivot.
+            while(findKthElement(head, j)->data > pivot->data){
+                j--;
+            }
+            if(i<j){
+                swapIthAndJthElement(head, i, j);
+            }
+        }
+        // After i and j pointers have crossed each other.
+        swapIthAndJthElement(head, i, end);
+        return i;
+    }
+
+    void Quicksort(node *&head, int start, int end){
+        if(start>=end){
+            return;
+        }
+        int pivot_index = partition(head, start, end);
+        Quicksort(head, start, pivot_index-1);
+        Quicksort(head, pivot_index+1, end);
+    }
 };
 
 // Creating a Heterogenous Linked List: 1 a 2 b 3 c 4 d 5 g ...

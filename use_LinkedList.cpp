@@ -10,6 +10,10 @@ int main(){
     L1.mergeLL1intoLL2atAltPos(L1.head, L2.head);
     L1.printList(L1.head);
     cout << endl;
+    cout << "Quicksort to L1" << endl;
+    L1.Quicksort(L1.head, 0, L1.length(L1.head)-1);
+	L1.printList(L1.head);
+    cout << endl;
  	cout << "Delete duplicates" << endl;
 	L1.deleteDuplicatesFromSortedLL(L1.head);
 	L1.printList(L1.head);
