@@ -1,4 +1,4 @@
-#include "BinaryTree1.h"
+#include "BinaryTree.h"
 int main(){
     BinaryTree<int> T1,T2,T3,T4;
     T1.createBinaryTree(T1.root);
