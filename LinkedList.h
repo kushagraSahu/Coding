@@ -37,7 +37,7 @@ public:
             cout << head->data << "->";
             head = head->next;
         }
-        cout << "X";
+        cout << "X" << endl;
     }
 
     //0th element will return the head and not the 1st element
@@ -245,6 +245,67 @@ public:
                     swapIthAndJthElement(head, i+1, i+2);
                 }
             }
+        }
+    }
+
+    void pushInFinalLL(node *&head3,node *&refNode, node *&newNode){
+        if(!head3){
+            head3 = newNode;
+        }
+        else{
+            refNode->next = newNode;
+        }
+        refNode = newNode;
+    }
+
+    void mergeTwoSortedLL(node *head1, node *head2, node *&head3){
+        node *refNode = NULL;//Will keep record of last filled node in final LL.
+        while(head1 && head2){
+            if(head1->data < head2->data){
+                pushInFinalLL(head3, refNode, head1);
+                head1 = head1->next;
+            }
+            else{
+                pushInFinalLL(head3, refNode, head2);
+                head2 = head2->next;
+            }
+        }
+        if(head1){
+            while(head1){
+                pushInFinalLL(head3, refNode, head1);
+                head1 = head1->next;
+            }
+        }
+        else{
+            while(head2){
+                pushInFinalLL(head3, refNode, head2);
+                head2 = head2->next;
+            }
+        }
+        return;
+    }
+
+    void deleteLastOccurrenceOfNode(node *&head, int key){
+        node *temp=head, *prevnode, *targetnode;
+        if(head->data == key){
+            prevnode = NULL;
+        }
+        while(temp->next){
+            if(temp->next->data == key){
+                prevnode=temp;
+                targetnode=temp->next;
+            }
+            temp=temp->next;
+        }
+        cout << endl;
+        if(!prevnode){
+            temp=head;
+            head=temp->next;
+            delete temp;
+        }
+        else{
+            prevnode->next = targetnode->next;
+            delete targetnode;
         }
     }
 
@@ -497,7 +558,7 @@ void cloneRandomLL_1(randomNode *heado, randomNode *&headc){
 //Function for Method2
 void restoreBothLL(randomNode *heado, randomNode *headc){
     randomNode *temp1=heado, *temp2=headc;
-    while(temp1&& temp2){
+    while(temp1 && temp2){
         temp1->next = temp1->next->next;
         if(temp2->next){
             temp2->next = temp2->next->next;
@@ -532,7 +593,7 @@ void cloneRandomLL_2(randomNode *heado, randomNode *&headc){
         temp1->next->random = temp1->random->next;
         temp1 = temp1->next->next;
     }
-    restoreBothLL(heado, headc);
+//    restoreBothLL(heado, headc);
     return;
 }
 
