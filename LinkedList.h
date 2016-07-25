@@ -3,13 +3,13 @@
 #include <iostream>
 using namespace std;
 class node{
-    public:
+public:
     int data;
     node *next;
     node():next(NULL){}//constructor with 0 arguments
 };
 class LinkedList{
-    public:
+public:
     node *head;
     LinkedList():head(NULL){}
 
@@ -227,6 +227,27 @@ class LinkedList{
         Quicksort(head, start, pivot_index-1);
         Quicksort(head, pivot_index+1, end);
     }
+
+    void ZigZagLL(node *&head){
+        int i;
+        node *temp=head;
+        for(i=0;temp->next->next;temp=temp->next,i++){
+            if(i%2==0){
+                if(temp->data > temp->next->data){
+                    swapIthAndJthElement(head, i, i+1);
+                }
+                if(temp->next->data < temp->next->next->data){
+                    swapIthAndJthElement(head, i+1, i+2);
+                }
+            }
+            else{
+                if(temp->next->data > temp->next->next->data){
+                    swapIthAndJthElement(head, i+1, i+2);
+                }
+            }
+        }
+    }
+
 };
 
 // Creating a Heterogenous Linked List: 1 a 2 b 3 c 4 d 5 g ...
@@ -322,6 +343,197 @@ void createHeterogeneousLL(node1 *&head){
             break;
         }
     }
+}
+
+struct randomNode{
+    int data;
+    randomNode *next;
+    randomNode *random;
+};
+
+void createNextLinksInRandomLL(randomNode *&head){
+    randomNode *currentnode, *prevnode;
+    int value;
+    cin >> value;
+    while(value!=-1){
+        currentnode = new randomNode;
+        currentnode->data = value;
+        currentnode->next = NULL;
+        if (!head){
+            head = currentnode;
+        }
+        else{
+            prevnode->next = currentnode;
+        }
+        prevnode = currentnode;
+        cin >> value;
+    }
+    return;
+}
+
+int lengthOfRandomLL(randomNode *head){
+    int len;
+    for(len=0;head!=NULL;head=head->next,len++){
+    }
+    return len;
+}
+
+randomNode *findKthElementInRandomLL(randomNode *head, int k){
+    while(head && k){
+        head = head->next;
+        k--;
+    }
+    return head;
+}
+
+void printNextPtrRandomList(randomNode *head){
+    cout << "Next ptrs" << endl;
+    while(head){
+        cout << head->data << "->";
+        head = head->next;
+    }
+    cout << "X" << endl;
+}
+
+void printRandomPtrRandomList(randomNode *head){
+    cout << "Random ptrs" << endl;
+    while(head){
+        cout << head->data << "->";
+        cout << head->random->data << endl;
+        head = head->next;
+    }
+    cout << "X" << endl;
+}
+
+void createRandomLinksinLL(randomNode *&head, int arr[]){
+    for(int i=0;i<lengthOfRandomLL(head);i++){
+        findKthElementInRandomLL(head, i)->random = findKthElementInRandomLL(head, arr[i]);
+    }
+    return;
+}
+
+//Function for both Method1.
+//Cloning only next pointers of original LL
+void cloneOnlyNextPtrsLL(randomNode *heado, randomNode *&headc){
+    randomNode *currentnode, *prevnode;
+    while(heado){
+        currentnode = new randomNode;
+        currentnode->data = heado->data;
+        currentnode->next = NULL;
+        if(!headc){
+            headc = currentnode;
+        }
+        else{
+            prevnode->next = currentnode;
+        }
+        prevnode = currentnode;
+        heado = heado->next;
+    }
+    return;
+}
+
+//Function for Method1.
+//Storing org next pointers of original LL before changing them.
+void storeNextPtrsOfOriginalLL(randomNode *heado, randomNode *arr[]){
+    for(int i=0;heado;heado=heado->next,i++){
+        arr[i] = heado;
+    }
+    return;
+}
+
+//Function for Method1
+void restoreOriginalLL_1(randomNode *&heado, randomNode *arr[]){
+    randomNode *temp = heado;
+    for(int i=1;arr[i];i++){
+        temp->next = arr[i];
+        temp=temp->next;
+    }
+    temp->next=NULL;
+    return;
+}
+
+//Method 1 -> Space,Time Complexity->O(n) (GeeksForGeeks)
+void cloneRandomLL_1(randomNode *heado, randomNode *&headc){
+    cloneOnlyNextPtrsLL(heado, headc);
+    randomNode *arr[20] = {NULL};
+    storeNextPtrsOfOriginalLL(heado, arr);
+
+    //Original LLnode->next = CorrespondingCloneLLnode
+    randomNode *temp = headc;
+    for(int i=0;arr[i];i++){
+        cout << i << endl;
+        arr[i]->next = temp;
+        temp=temp->next;
+    }
+
+    //Setting random ptr of cloneLLnode to corresponding Original LLnode
+    temp = headc;
+    for(int i=0;arr[i];i++){
+        temp->random = arr[i];
+        temp=temp->next;
+    }
+
+    //Final step!
+    temp = headc;
+    while(temp){
+        temp->random = temp->random->random->next;
+        temp=temp->next;
+    }
+    //Current situation: heado->headc->clonedLL; Original LL is disturbed.
+    restoreOriginalLL_1(heado, arr);
+    return;
+}
+
+//Function for Method2
+//void insertCopyNodeBtwOriginalLL(randomNode *heado){
+//    randomNode *currentnode, *temp=heado;
+//    while(temp){
+//        currentnode = new randomNode;
+//        currentnode->data = temp->data;
+//        currentnode->next = temp->next;
+//        temp->next = currentnode;
+//        temp = temp->next->next;
+
+//Function for Method2
+void restoreBothLL(randomNode *heado, randomNode *headc){
+    randomNode *temp1=heado, *temp2=headc;
+    while(temp1&& temp2){
+        temp1->next = temp1->next->next;
+        if(temp2->next){
+            temp2->next = temp2->next->next;
+        }
+        else{
+            temp2->next=NULL;
+        }
+        temp1=temp1->next;
+        temp2=temp2->next;
+    }
+    return;
+}
+
+//Method2 -> Time Complexity->O(n), Space Complexity->O(1) since not storing addr in an array (Anushray Bhaiya, clicked right away!)
+void cloneRandomLL_2(randomNode *heado, randomNode *&headc){
+    randomNode *currentnode, *temp=heado;
+    while(temp){
+        currentnode = new randomNode;
+        currentnode->data = temp->data;
+        currentnode->next = temp->next;
+        temp->next = currentnode;
+        temp = temp->next->next;
+    }
+    if(!heado){
+        cout << "BC" << endl;
+    }
+    randomNode *temp1=heado;
+    printNextPtrRandomList(heado);
+    headc = heado->next;
+    while(temp1){
+        cout << temp1->data << endl;
+        temp1->next->random = temp1->random->next;
+        temp1 = temp1->next->next;
+    }
+    restoreBothLL(heado, headc);
+    return;
 }
 
 #endif // LL_h
