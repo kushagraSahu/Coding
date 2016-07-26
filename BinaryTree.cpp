@@ -22,7 +22,7 @@ void createBinaryTree(node *&root){
 	while(!Q.empty()){
 		node *temp = Q.front();
 		Q.pop();
-		cout << "Is there a Left Node for " << temp->data <<  "?" << "Y/N?: ";
+		cout << "Is there a Left Node for " << temp->data <<  "? " << "Y/N?: ";
 		cin >> choice;
 		if(choice == 'y' || choice == 'Y'){
 			cout << "Enter data for left node: ";
@@ -33,7 +33,7 @@ void createBinaryTree(node *&root){
 			temp->left->data = value;
 			Q.push(temp->left);
 		}
-		cout << "Is there a Right Node for " << temp->data <<  "?" << "Y/N?: ";
+		cout << "Is there a Right Node for " << temp->data <<  "? " << "Y/N?: ";
 
 		cin >> choice;
 		if(choice == 'y' || choice == 'Y'){
@@ -75,6 +75,7 @@ void printLevelOrderBT(node *root){
 			}
 		}
 	}
+	cout << endl;
 	return;
 }
 
@@ -466,11 +467,53 @@ void convertBTintoSumTree(node *&root){
 	root->data = sum;
 	return;
 }
+
+bool checkChildrenSumPropertyInBT(node *root){
+	int right_child_data=0, left_child_data=0;
+	if(!root->right && !root->left){
+		return true;
+	}
+	if(root->left){
+		if(checkChildrenSumPropertyInBT(root->left)){
+			left_child_data = root->left->data;
+		}
+		else{
+			return false;
+		}
+	}
+	if(root->right){
+		if(checkChildrenSumPropertyInBT(root->right)){
+			right_child_data = root->right->data;
+		}
+		else{
+			return false;
+		}
+	}
+	if(root->data == left_child_data + right_child_data){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+
+
+
+
 int main(){
 	node *root = NULL;
 	createBinaryTree(root);
+	cout << "Original BT:" << endl;
 	printLevelOrderBT(root);
+	if(checkChildrenSumPropertyInBT(root)){
+        cout << "Children Sum Property satisfied!" << endl;
+	}
+	else{
+        cout << "Children Sum Property NOT satisfied!" << endl;
+	}
 	convertBTintoSumTree(root);
+	cout << "Sum Tree:" << endl;
 	printLevelOrderBT(root);
 	return 0;
 }
