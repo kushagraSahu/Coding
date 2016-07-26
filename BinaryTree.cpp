@@ -497,23 +497,57 @@ bool checkChildrenSumPropertyInBT(node *root){
 	}
 }
 
+bool areTwoSubtreesStructuralMirrorImages(node *root1, node *root2){
+	if(!root1 && !root2){
+		return true;
+	}
+	else if(root1 && !root2){
+		return false;
+	}
+	else if(!root1 && root2){
+		return false;
+	}
+	else if(root1 && root2){
+		if(areTwoSubtreesStructuralMirrorImages(root1->left, root2->right)){
+			return areTwoSubtreesStructuralMirrorImages(root1->right, root2->left);
+		}
+		else{
+			return false;
+		}
+	}
+}
 
-
-
-
-int main(){
-	node *root = NULL;
-	createBinaryTree(root);
-	cout << "Original BT:" << endl;
-	printLevelOrderBT(root);
-	if(checkChildrenSumPropertyInBT(root)){
-        cout << "Children Sum Property satisfied!" << endl;
+bool isBTFoldable(node *root){
+	if(!root){
+		return true;
 	}
 	else{
-        cout << "Children Sum Property NOT satisfied!" << endl;
+		return areTwoSubtreesStructuralMirrorImages(root->left, root->right);
 	}
-	convertBTintoSumTree(root);
-	cout << "Sum Tree:" << endl;
-	printLevelOrderBT(root);
+}
+
+int main(){
+//	node *root = NULL;
+//	createBinaryTree(root);
+//	cout << "Original BT:" << endl;
+//	printLevelOrderBT(root);
+//	if(checkChildrenSumPropertyInBT(root)){
+//        cout << "Children Sum Property satisfied!" << endl;
+//	}
+//	else{
+//        cout << "Children Sum Property NOT satisfied!" << endl;
+//	}
+//	convertBTintoSumTree(root);
+//	cout << "Sum Tree:" << endl;
+//	printLevelOrderBT(root);
+	node *root1 = NULL;
+	createBinaryTree(root1);
+	printLevelOrderBT(root1);
+	if(isBTFoldable(root1)){
+		cout << "BT is foldable" << endl;
+	}
+	else{
+		cout << "BT is NOT foldable" << endl;
+	}
 	return 0;
 }
