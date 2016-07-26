@@ -185,28 +185,182 @@ int findWidthOfTree(node *root){
     return width;
 }
 
+int findDiameterOfBT(node *root){
+	int diameter, diameter_left_subtree, diameter_right_subtree;
+	int diameter_through_root = findHeightOfBT(root->left) + findHeightOfBT(root->right) + 1;
+	diameter = diameter_through_root;
+	// Finding diameter of Left Subtree
+	if(root->left){
+		diameter_left_subtree = findDiameterOfBT(root->left);
+		if(diameter_left_subtree > diameter){
+			diameter = diameter_left_subtree;
+		}
+	}
+	if(root->right){
+		diameter_right_subtree = findDiameterOfBT(root->right);
+		if(diameter_right_subtree > diameter){
+			diameter = diameter_right_subtree;
+		}
+	}
+	return diameter;
+}
 
+node *findLargesNodeInBT(node *root){
+	node *max=root, *temp;
+	if(root->left){
+		temp = findLargesNodeInBT(root->left);
+		if(temp->data > max->data){
+			max = temp;
+		}
+	}
+	if(root->right){
+		temp = findLargesNodeInBT(root->right);
+		if(temp->data > max->data){
+			max=temp;
+		}
+	}
+	return max;
+}
 
+void clearBT(node *&root){
+	if(!root->left && !root->right){
+		delete root;
+		return;
+	}
+	if(root->left){
+		clearBT(root->left);
+	}
+	if(root->right){
+		clearBT(root->right);
+	}
+	return;
+}
 
+void printAtKDepthBFS(node *root, int k){
+	int depth=0;
+	queue<node *> Q;
+	Q.push(root);
+	Q.push(NULL);
+	cout << "Nodes at Depth " << k << " : ";
+	while(!Q.empty()){
+		node *temp=Q.front();
+		Q.pop();
+		if(!temp){
+			if(!Q.empty()){
+				if(depth==k){
+					break;
+				}
+				depth++;
+				Q.push(NULL);
+			}
+		}
+		else{
+			if(depth==k){
+				cout << temp->data << " ";
+			}
+			if(temp->left){
+				Q.push(temp->left);
+			}
+			if(temp->right){
+				Q.push(temp->right);
+			}
+		}
+	}
+	cout << endl;
+	return;
+}
 
+void printAtKDepthDFS(node *root, int k){
+	if(!k){
+		cout << root->data << " ";
+		return;
+	}
+	if(root->left){
+		printAtKDepthDFS(root->left, k-1);
+	}
+	if(root->right){
+		printAtKDepthDFS(root->right, k-1);
+	}
+	return;
+}
 
+int sizeOfTreeDFS(node *root){
+	int size, temp;
+	if(!root){
+		size=0;
+	}
+	else{
+		size=1;
+	}
+	if(root->left){
+		temp=sizeOfTreeDFS(root->left);
+		size+=temp;
+	}
+	if(root->right){
+		temp=sizeOfTreeDFS(root->right);
+		size+=temp;
+	}
+	return size;
+}
 
+//BFS
+void createMirrorBT(node *root1, node *&root2){
+	if(!root1){
+		return;
+	}
+	root2 = new node;
+	root2->data = root1->data;
+	queue<node *> Q1, Q2;
+	Q1.push(root1);
+	Q2.push(root2);
+	Q1.push(NULL);
+	Q2.push(NULL);
+	while(!Q1.empty()){
+		node *temp1 = Q1.front();
+		Q1.pop();
+		node *temp2 = Q2.front();
+		Q2.pop();
+		if(temp1->left){
+			temp2->right = new node;
+			temp2->right->data = temp1->left->data;
+			Q1.push(temp1);
+			Q2.push(temp2);
+		}
+		if(temp1->right){
+			temp2->left = new node;
+			temp2->left->data = temp1->right->data;
+			Q1.push(temp1);
+			Q2.push(temp2);
+		}
+	}
+	return;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//BFS
+node *findNodewithLargestSumOfDataAndItsChildren(node *root){
+	if(!root){
+		return NULL;
+	}
+	int sum=0, sum_temp;
+	node *max;
+	queue<node *> Q;
+	Q.push(root);
+	while(!Q.empty()){
+		node *temp=Q.front();
+		Q.pop();
+		sum_temp = temp->data;
+		if(temp->left){
+			sum_temp+=temp->left>data;
+			Q.push(temp->left);
+		}
+		if(temp->right){
+			sum_temp+=temp->right->data;
+			Q.push(temp->right);
+		}
+		if(sum_temp>sum){
+			sum=sum_temp;
+			max=temp;
+		}
+	}
+	return max;
+}
