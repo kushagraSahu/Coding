@@ -4,7 +4,11 @@ int main(){
 	cout << "Enter LL1" << endl;
 	L1.createLinkedList(L1.head);
 	L1.printList(L1.head);
-	cout << endl;
+	cout << "reverseLL1" << endl;
+	L1.reverseLL(L1.head);
+	L1.printList(L1.head);
+	cout << "middle of LL1:";
+	cout << L1.findMiddleOfLL(L1.head)->data << endl;
 	cout << "ZigZagLL" << endl;
 	L1.ZigZagLL(L1.head);
     L1.printList(L1.head);

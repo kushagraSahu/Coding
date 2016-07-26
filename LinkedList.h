@@ -56,6 +56,15 @@ public:
         return len;
     }
 
+    node *findMiddleOfLL(node *head){
+        node *temp1=head, *temp2=head;
+        while(temp2 && temp2->next){
+            temp1=temp1->next;
+            temp2=temp2->next->next;
+        }
+        return temp1;
+    }
+
     bool is_Palindrome(node *head){
         int len = length(head);
         node *temp;
@@ -307,6 +316,22 @@ public:
             prevnode->next = targetnode->next;
             delete targetnode;
         }
+    }
+
+    void reverseLL(node *&head){
+        node *prevnode=NULL, *next;
+        while(head){
+            next = head->next;
+            head->next=prevnode;
+            prevnode=head;
+            if(next){
+                head=next;
+            }
+            else{
+                break;
+            }
+        }
+        return;
     }
 
 };
@@ -596,6 +621,12 @@ void cloneRandomLL_2(randomNode *heado, randomNode *&headc){
 //    restoreBothLL(heado, headc);
     return;
 }
+
+struct stringNode{
+    string data;
+    stringNode *next;
+};
+
 
 #endif // LL_h
 
