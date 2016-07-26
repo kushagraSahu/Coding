@@ -152,37 +152,37 @@ int findDepthOfNodeBFS(node *root, int key){
 }
 
 int findWidthOfTree(node *root){
-    if(!root){
-        return 0;
-    }
-    int width=1, width_temp=0;
-    queue<node *> Q;
-    Q.push(root);
-    Q.push(NULL);
-    while(!Q.empty()){
-    	node *temp = Q.front();
-    	Q.pop();
-    	if(!temp){
-    		if(!Q.empty()){
-    			if(width_temp>width){
-    				width=width_temp;
-    			}
-    			width_temp=0;
-    			Q.push(NULL);
-    		}
-    		else{
-    			if(temp->left){
-    				temp+=1;
-    				Q.push(temp->left);
-    			}
-    			if(temp->right){
-    				temp+=1;
-    				Q.push(temp->right);
-    			}
-    		}
-    	}
-    }
-    return width;
+	if(!root){
+		return 0;
+	}
+	int width=1, width_temp=0;
+	queue<node *> Q;
+	Q.push(root);
+	Q.push(NULL);
+	while(!Q.empty()){
+		node *temp = Q.front();
+		Q.pop();
+		if(!temp){
+			if(!Q.empty()){
+				if(width_temp>width){
+					width=width_temp;
+				}
+				width_temp=0;
+				Q.push(NULL);
+			}
+			else{
+				if(temp->left){
+					temp+=1;
+					Q.push(temp->left);
+				}
+				if(temp->right){
+					temp+=1;
+					Q.push(temp->right);
+				}
+			}
+		}
+	}
+	return width;
 }
 
 int findDiameterOfBT(node *root){
@@ -364,3 +364,90 @@ node *findNodewithLargestSumOfDataAndItsChildren(node *root){
 	}
 	return max;
 }
+
+int sumOfAllNodesInBT(node *root){
+	int sum = root->data;
+	if(root->left){
+		sum+=sumOfAllNodesInBT(root->left);
+	}
+	if(root->right){
+		sum+=sumOfAllNodesInBT(root->right);
+	}
+	return sum;
+}
+
+int countLeafNodesInBT(node *root){
+	int leaf_count=0;
+	if(!root->left && !root->right){
+		leaf_count+=1;
+	}
+	if(root->left){
+		leaf_count+=countLeafNodesInBT(root->left);
+	}
+	if(root->right){
+		leaf_count+=countLeafNodesInBT(root->right);
+	}
+	return leaf_count;
+}
+
+
+
+//DFS
+node *findNextLargestNodeInBT(node *root, int value, int nextLargestValue){
+	node *nextLargestNode = NULL, *temp;
+	if(root->data > value && root->data < nextLargestValue){
+		nextLargestNode = root;
+		nextLargestValue = root->data;
+	}
+	if(root->left){
+		temp = findNextLargestNodeInBT(root->left, value, nextLargestValue);
+		if(temp){
+			if(temp->data > value && temp->data < nextLargestValue){
+				nextLargestNode = temp;
+				nextLargestValue = temp->data;
+			}
+		}
+	}
+	if(root->right){
+		temp = findNextLargestNodeInBT(root->right, value, nextLargestValue);
+		if(temp){
+			if(temp->data > value && temp->data < nextLargestValue){
+				nextLargestNode = temp;
+				nextLargestValue = temp->data;
+			}
+		}
+	}
+	return nextLargestNode;
+}
+
+//BFS
+node* FindElementinBinaryTree(node *root,int value){
+	node *temp=NULL;
+	if(!root){
+		return temp;
+	}
+	queue<node *> Q;
+	Q.push(root);
+	while(!Q.empty()){
+		temp=Q.front();
+		Q.pop();
+		if(temp->data==value){
+			return temp;
+			break;
+		}
+		else{
+			if(temp->left){
+				Q.push(temp->left);
+			}
+			if(temp->right){
+				Q.push(temp->right);
+			}
+		}
+	}
+	if(Q.empty()){
+		return NULL;
+	}
+}
+
+
+
