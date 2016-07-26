@@ -22,7 +22,7 @@ void createBinaryTree(node *&root){
 	while(!Q.empty()){
 		node *temp = Q.front();
 		Q.pop();
-		cout << "Is there a Left Node? Y/N?: ";
+		cout << "Is there a Left Node for " << temp->data <<  "?" << "Y/N?: ";
 		cin >> choice;
 		if(choice == 'y' || choice == 'Y'){
 			cout << "Enter data for left node: ";
@@ -33,7 +33,8 @@ void createBinaryTree(node *&root){
 			temp->left->data = value;
 			Q.push(temp->left);
 		}
-		cout << "Is there a right Node? Y/N?: ";
+		cout << "Is there a Right Node for " << temp->data <<  "?" << "Y/N?: ";
+
 		cin >> choice;
 		if(choice == 'y' || choice == 'Y'){
 			cout << "Enter data for right node: ";
@@ -350,7 +351,7 @@ node *findNodewithLargestSumOfDataAndItsChildren(node *root){
 		Q.pop();
 		sum_temp = temp->data;
 		if(temp->left){
-			sum_temp+=temp->left>data;
+			sum_temp+=temp->left->data;
 			Q.push(temp->left);
 		}
 		if(temp->right){
@@ -449,5 +450,27 @@ node* FindElementinBinaryTree(node *root,int value){
 	}
 }
 
-
-
+//DFS
+void convertBTintoSumTree(node *&root){
+	int original_left_data, original_right_data, sum=0;
+	if(root->left){
+		original_left_data = root->left->data;
+		convertBTintoSumTree(root->left);
+		sum+=original_left_data + root->left->data;
+	}
+	if(root->right){
+		original_right_data = root->right->data;
+		convertBTintoSumTree(root->right);
+		sum+=original_right_data + root->right->data;
+	}
+	root->data = sum;
+	return;
+}
+int main(){
+	node *root = NULL;
+	createBinaryTree(root);
+	printLevelOrderBT(root);
+	convertBTintoSumTree(root);
+	printLevelOrderBT(root);
+	return 0;
+}
