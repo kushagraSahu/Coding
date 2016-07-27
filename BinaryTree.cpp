@@ -392,8 +392,6 @@ int countLeafNodesInBT(node *root){
 	return leaf_count;
 }
 
-
-
 //DFS
 node *findNextLargestNodeInBT(node *root, int value, int nextLargestValue){
 	node *nextLargestNode = NULL, *temp;
@@ -526,20 +524,77 @@ bool isBTFoldable(node *root){
 	}
 }
 
+bool areTwoTreesIdentical(node *root1, node *root2){
+	if(root1->data!=root2->data){
+		return false;
+	}
+	if(root1->left){
+		if(root2->left){
+			return areTwoTreesIdentical(root1->left,root2->left);
+		}
+		else{
+			return false;
+		}
+	}
+	if(root1->right){
+		if(root2->right){
+			return areTwoTreesIdentical(root1->right,root2->right);
+		}
+		else{
+			return false;
+		}
+	}
+	return true;
+}
+
+//Helper for Method1
+node *removeAllNodesLyingOnPathWithSumLessThanK_helper(node *root, int sum, int k){
+	if(!root){
+		return NULL;
+	}
+	sum+=root->data;
+	root->left = removeAllNodesLyingOnPathWithSumLessThanK(root->left, sum, k);
+	root->right = removeAllNodesLyingOnPathWithSumLessThanK(root->right, sum, k);
+	if(!root->left && !root->right && sum < k){
+		delete root;
+		return NULL;
+	}
+	return root;
+}	
+
+//Method1
+node *removeAllNodesLyingOnPathWithSumLessThanK_1(node *root, int k){
+	return removeAllNodesLyingOnPathWithSumLessThanK_helper(root, 0, k);
+}
+
+//Geeks For Geeks Method (clever!)
+node *removeAllNodesLyingOnPathWithSumLessThanK_2(node *root, int sum){
+	if(!root){
+		return NULL;
+	}
+	root->left = removeAllNodesLyingOnPathWithSumLessThanK_2(root->left, sum - root->data);
+	root->right = removeAllNodesLyingOnPathWithSumLessThanK_2(root->right, sum - root->data);
+	if(!root->left && !root->right && root->data < sum){
+		delete root;
+		return NULL;
+	}
+	return root;
+}
+
 int main(){
-//	node *root = NULL;
-//	createBinaryTree(root);
-//	cout << "Original BT:" << endl;
-//	printLevelOrderBT(root);
-//	if(checkChildrenSumPropertyInBT(root)){
-//        cout << "Children Sum Property satisfied!" << endl;
-//	}
-//	else{
-//        cout << "Children Sum Property NOT satisfied!" << endl;
-//	}
-//	convertBTintoSumTree(root);
-//	cout << "Sum Tree:" << endl;
-//	printLevelOrderBT(root);
+	node *root = NULL;
+	createBinaryTree(root);
+	cout << "Original BT:" << endl;
+	printLevelOrderBT(root);
+	if(checkChildrenSumPropertyInBT(root)){
+		cout << "Children Sum Property satisfied!" << endl;
+	}
+	else{
+		cout << "Children Sum Property NOT satisfied!" << endl;
+	}
+	convertBTintoSumTree(root);
+	cout << "Sum Tree:" << endl;
+	printLevelOrderBT(root);
 	node *root1 = NULL;
 	createBinaryTree(root1);
 	printLevelOrderBT(root1);
