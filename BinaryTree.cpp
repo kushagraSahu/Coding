@@ -864,7 +864,23 @@ int findDepthOfDeepestOddLevelLeafNode(node *root){
 	return depth_leaf;
 }
 
-void reverseAlternateLevelsOfPerfectBT(node *root){}
+bool isBT1SubTreeOfBT2(node *root1, node *root2){
+	if(!root1){
+		return false;
+	}
+	if(!root2){
+		return false;
+	}
+	if(areTwoTreesIdentical(root1, root2)){
+		return true;
+	}
+	if(isBT1SubTreeOfBT2(root1->left, root2)){
+		return true;
+	}
+	else{
+		return isBT1SubTreeOfBT2(root1->right, root2);
+	}
+}
 
 int main(){
 	node *root = NULL;
@@ -872,26 +888,27 @@ int main(){
 	cout << "Original BT:" << endl;
 	printLevelOrderBT(root);
 	cout << "DeepestLeftLeafNode: " << findDeepestLeftLeafNode(root)->data << endl;
+	
 	findMaxSumPathInBT(root);
-//	if(checkChildrenSumPropertyInBT(root)){
-//		cout << "Children Sum Property satisfied!" << endl;
-//	}
-//	else{
-//		cout << "Children Sum Property NOT satisfied!" << endl;
-//	}
-//	convertBTintoSumTree(root);
-//	cout << "Sum Tree:" << endl;
-//	printLevelOrderBT(root);
-//	node *root1 = NULL;
-//	createBinaryTree(root1);
-//	printLevelOrderBT(root1);
-//	if(isBTFoldable(root1)){
-//		cout << "BT is foldable" << endl;
-//	}
-//	else{
-//		cout << "BT is NOT foldable" << endl;
-//	}
-//	cout << "To find LCA: " << endl;
+	if(checkChildrenSumPropertyInBT(root)){
+		cout << "Children Sum Property satisfied!" << endl;
+	}
+	else{
+		cout << "Children Sum Property NOT satisfied!" << endl;
+	}
+	convertBTintoSumTree(root);
+	cout << "Sum Tree:" << endl;
+	printLevelOrderBT(root);
+	node *root1 = NULL;
+	createBinaryTree(root1);
+	printLevelOrderBT(root1);
+	if(isBTFoldable(root1)){
+		cout << "BT is foldable" << endl;
+	}
+	else{
+		cout << "BT is NOT foldable" << endl;
+	}
+	cout << "To find LCA: " << endl;
 	int value1, value2;
 	cout << "Enter data of node 1: ";
 	cin >> value1;
