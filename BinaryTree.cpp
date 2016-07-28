@@ -792,6 +792,80 @@ node *findLCA(node *root, int value1, int value2){
 	return temp;
 }
 
+//Using Stack to print even levels in reverse.(Method 1) 
+void printTreeinZigZagPattern(node *root){
+	int count=1;
+	queue<node *> Q;
+	stack<node *> S;
+	Q.push(root);
+	Q.push(NULL);
+	while(!Q.empty()){
+		node *temp=Q.front();
+		Q.pop();
+		if(!temp){
+			if(!Q.empty()){
+				count++;
+				cout << endl;
+				Q.push(NULL);
+			}
+		}
+		else{
+			if(count%2!=0){
+				cout << temp->data << " ";
+			}
+			else{
+				cout << S.top()->data <<" ";
+				S.pop();
+			}
+			if(temp->left){
+				Q.push(temp->left);
+				if(count%2){
+					S.push(temp->left);
+				}
+			}
+			if(temp->right){
+				Q.push(temp->right);
+				if(count%2){
+					S.push(temp->right);
+				}
+			}
+		}
+	}
+}
+
+int findDepthOfDeepestOddLevelLeafNode(node *root){
+	int depth=1,depth_leaf=0;
+	queue<node *> Q;
+	Q.push(root);
+	Q.push(NULL);
+	while(!Q.empty()){
+		node *temp=Q.front();
+		Q.pop();
+		if(!temp){
+			if(!Q.empty()){
+				depth++;
+				Q.push(NULL);
+			}
+		}
+		else{
+			if(depth%2&&(!temp->left&&!temp->right)){
+				depth_leaf=depth;
+			}
+			else{
+				if(temp->left){
+					Q.push(temp->left);
+				}
+				if(temp->right){
+					Q.push(temp->right);
+				}
+			}
+		}
+	}
+	return depth_leaf;
+}
+
+void reverseAlternateLevelsOfPerfectBT(node *root){}
+
 int main(){
 	node *root = NULL;
 	createBinaryTree(root);
