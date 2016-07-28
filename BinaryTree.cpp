@@ -673,14 +673,14 @@ void printDLL(node *head){
 }
 
 void printReverseDLL(node *head){
-    while(head->right){
-        head=head->right;
-    }
-    while(head){
-        cout << head->data << "-->";
-        head=head->left;
-    }
-    cout << "X" << endl;
+	while(head->right){
+		head=head->right;
+	}
+	while(head){
+		cout << head->data << "-->";
+		head=head->left;
+	}
+	cout << "X" << endl;
 }
 
 //treating 'right' ptr as 'next' & 'left' as 'prev' ptr;
@@ -712,11 +712,46 @@ void connectLeavesOfBTasDLL(node *root, node *&head){
 	return;
 }
 
+void findDeepestLeftLeafNode_helper(node *root, int *max_depth, int depth_of_node, node *&targetLeafNode){
+	if(!root){
+		return;
+	}
+	node *temp;
+	int depth_of_leaf_node;
+	if(root->left){
+		temp = root->left;
+		//Checking if leaf node is the left leaf node or not.
+		if(!temp->left && !temp->right){
+			//Here, depth_of_node represents depth of parent of leaf node, so incrementing it by 1 for the depth of leaf node.
+			depth_of_leaf_node = depth_of_node + 1;
+			if(depth_of_leaf_node > *max_depth){
+				*max_depth = depth_of_node;
+				targetLeafNode = temp;
+			}
+		}
+	}
+	if(root->left){
+		findDeepestLeftLeafNode_helper(root->left, max_depth, depth_of_node+1, targetLeafNode);
+	}
+	if(root->right){
+		findDeepestLeftLeafNode_helper(root->right, max_depth, depth_of_node+1, targetLeafNode);
+	}
+	return;
+}
+
+node *findDeepestLeftLeafNode(node *root){
+	int depth_of_node = 0, max_depth=0;
+	node *targetLeafNode=NULL;
+	findDeepestLeftLeafNode_helper(root, &max_depth, depth_of_node, targetLeafNode);
+	return targetLeafNode;
+}
+
 int main(){
 	node *root = NULL;
 	createBinaryTree(root);
 	cout << "Original BT:" << endl;
 	printLevelOrderBT(root);
+	cout << "DeepestLeftLeafNode: " << findDeepestLeftLeafNode(root)->data << endl;
 	findMaxSumPathInBT(root);
 	if(checkChildrenSumPropertyInBT(root)){
 		cout << "Children Sum Property satisfied!" << endl;
@@ -736,6 +771,7 @@ int main(){
 	else{
 		cout << "BT is NOT foldable" << endl;
 	}
+	//Warning! Keep below section of code at the bottom of main() always since it messes up right and left pointers, destroying its BT structure!
 	node *head = NULL;
 	connectLeavesOfBTasDLL(root, head);
 	cout << "Double Linked List of Leaf nodes: " << endl;
@@ -743,6 +779,7 @@ int main(){
 	printDLL(head);
 	cout << "While traversing through prev pointer: ";
 	printReverseDLL(head);
+
 	return 0;
 }
 
