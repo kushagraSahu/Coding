@@ -553,14 +553,14 @@ node *removeAllNodesLyingOnPathWithSumLessThanK_helper(node *root, int sum, int 
 		return NULL;
 	}
 	sum+=root->data;
-	root->left = removeAllNodesLyingOnPathWithSumLessThanK(root->left, sum, k);
-	root->right = removeAllNodesLyingOnPathWithSumLessThanK(root->right, sum, k);
+	root->left = removeAllNodesLyingOnPathWithSumLessThanK_helper(root->left, sum, k);
+	root->right = removeAllNodesLyingOnPathWithSumLessThanK_helper(root->right, sum, k);
 	if(!root->left && !root->right && sum < k){
 		delete root;
 		return NULL;
 	}
 	return root;
-}	
+}
 
 //Method1
 node *removeAllNodesLyingOnPathWithSumLessThanK_1(node *root, int k){
@@ -581,11 +581,143 @@ node *removeAllNodesLyingOnPathWithSumLessThanK_2(node *root, int sum){
 	return root;
 }
 
+bool printRootToTargetNodePath(node *root, node *targetNode){
+	if(!root){
+		return false;
+	}
+	if(root==targetNode){
+		cout << root->data << " ";
+		return true;
+	}
+	if(printRootToTargetNodePath(root->left, targetNode)){
+		cout << root->data << " ";
+		return true;
+	}
+	if(printRootToTargetNodePath(root->right,targetNode)){
+		cout << root->data << " ";
+		return true;
+	}
+	return false;
+}
+
+void findMaxSumPathInBT_helper(node *root, int sum, int *max_sum, node *&targetLeafNode){
+	if(!root){
+		return;
+	}
+	sum+=root->data;
+	if(root->left){
+		findMaxSumPathInBT_helper(root->left, sum, max_sum, targetLeafNode);
+	}
+	if(root->right){
+		findMaxSumPathInBT_helper(root->right, sum, max_sum, targetLeafNode);
+	}
+	if(!root->left && !root->right){
+		if(sum > *max_sum){
+			*max_sum = sum;
+			targetLeafNode = root;
+		}
+	}
+}
+
+void findMaxSumPathInBT(node *root){
+	node *targetLeafNode=NULL;
+	int max_sum = 0;
+	findMaxSumPathInBT_helper(root, 0, &max_sum, targetLeafNode);
+	cout << "Maximum Sum: " << max_sum << endl;
+	cout << "MaxSumRootToLeafPath: ";
+	printRootToTargetNodePath(root, targetLeafNode);
+	cout << endl;
+	return;
+}
+
+//BFS
+void printLeftViewOfBT(node *root){
+	if(!root){
+		return;
+	}
+	int count=1;
+	queue<node *> Q;
+	Q.push(root);
+	Q.push(NULL);
+	while(!Q.empty()){
+		node *temp=Q.front();
+		Q.pop();
+		if(!temp){
+			if(!Q.empty()){
+				cout << endl;
+				count=1;
+				Q.push(NULL);
+			}
+		}
+		else{
+			if(count==1){
+				cout << temp->data;
+			}
+			if(temp->left){
+				Q.push(temp->left);
+			}
+			if(temp->right){
+				Q.push(temp->right);
+			}
+			count++;
+		}
+	}
+}
+
+void printDLL(node *head){
+	while(head){
+		cout << head->data << "-->";
+		head=head->right;
+	}
+	cout << "X" << endl;
+}
+
+void printReverseDLL(node *head){
+    while(head->right){
+        head=head->right;
+    }
+    while(head){
+        cout << head->data << "-->";
+        head=head->left;
+    }
+    cout << "X" << endl;
+}
+
+//treating 'right' ptr as 'next' & 'left' as 'prev' ptr;
+void connectLeavesOfBTasDLL_helper(node *root, node *&head, node *&prevnode){
+	if(!root->left && !root->right){
+		if(!head){
+			head = root;
+		}
+		else{
+			prevnode->right = root;
+			root->left = prevnode;
+		}
+		prevnode = root;
+	}
+	else{
+		if(root->left){
+			connectLeavesOfBTasDLL_helper(root->left, head, prevnode);
+		}
+		if(root->right){
+			connectLeavesOfBTasDLL_helper(root->right, head, prevnode);
+		}
+		return;
+	}
+}
+
+void connectLeavesOfBTasDLL(node *root, node *&head){
+	node *prevnode = NULL;
+	connectLeavesOfBTasDLL_helper(root, head, prevnode);
+	return;
+}
+
 int main(){
 	node *root = NULL;
 	createBinaryTree(root);
 	cout << "Original BT:" << endl;
 	printLevelOrderBT(root);
+	findMaxSumPathInBT(root);
 	if(checkChildrenSumPropertyInBT(root)){
 		cout << "Children Sum Property satisfied!" << endl;
 	}
@@ -604,5 +736,13 @@ int main(){
 	else{
 		cout << "BT is NOT foldable" << endl;
 	}
+	node *head = NULL;
+	connectLeavesOfBTasDLL(root, head);
+	cout << "Double Linked List of Leaf nodes: " << endl;
+	cout << "While traversing through next pointer: ";
+	printDLL(head);
+	cout << "While traversing through prev pointer: ";
+	printReverseDLL(head);
 	return 0;
 }
+
