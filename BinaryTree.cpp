@@ -1,5 +1,6 @@
 #include<iostream>
 #include<queue>
+#include<stack>
 using namespace std;
 
 struct node{
@@ -746,6 +747,51 @@ node *findDeepestLeftLeafNode(node *root){
 	return targetLeafNode;
 }
 
+bool getAncestorsinStack(node *root,int value, stack<node *> &S){
+	if(root->data == value){
+		S.push(root);
+		return true;
+	}
+	if(root->left){
+		if(getAncestorsinStack(root->left, value, S)){
+			S.push(root);
+			return true;
+		}
+		else{
+			false;
+		}
+	}
+	if(root->right){
+		if(getAncestorsinStack(root->right, value, S)){
+			S.push(root);
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	return false;
+}
+
+node *findLCA(node *root, int value1, int value2){
+	stack<node *> S1;
+	stack<node *> S2;
+	getAncestorsinStack(root, value1, S1);
+	getAncestorsinStack(root, value2, S2);
+	node *temp;
+	while(!S1.empty() && !S2.empty()){
+		if(S1.top() == S2.top()){
+			temp = S1.top();
+			S1.pop();
+			S2.pop();
+		}
+		else{
+			break;
+		}
+	}
+	return temp;
+}
+
 int main(){
 	node *root = NULL;
 	createBinaryTree(root);
@@ -753,24 +799,34 @@ int main(){
 	printLevelOrderBT(root);
 	cout << "DeepestLeftLeafNode: " << findDeepestLeftLeafNode(root)->data << endl;
 	findMaxSumPathInBT(root);
-	if(checkChildrenSumPropertyInBT(root)){
-		cout << "Children Sum Property satisfied!" << endl;
-	}
-	else{
-		cout << "Children Sum Property NOT satisfied!" << endl;
-	}
-	convertBTintoSumTree(root);
-	cout << "Sum Tree:" << endl;
-	printLevelOrderBT(root);
-	node *root1 = NULL;
-	createBinaryTree(root1);
-	printLevelOrderBT(root1);
-	if(isBTFoldable(root1)){
-		cout << "BT is foldable" << endl;
-	}
-	else{
-		cout << "BT is NOT foldable" << endl;
-	}
+//	if(checkChildrenSumPropertyInBT(root)){
+//		cout << "Children Sum Property satisfied!" << endl;
+//	}
+//	else{
+//		cout << "Children Sum Property NOT satisfied!" << endl;
+//	}
+//	convertBTintoSumTree(root);
+//	cout << "Sum Tree:" << endl;
+//	printLevelOrderBT(root);
+//	node *root1 = NULL;
+//	createBinaryTree(root1);
+//	printLevelOrderBT(root1);
+//	if(isBTFoldable(root1)){
+//		cout << "BT is foldable" << endl;
+//	}
+//	else{
+//		cout << "BT is NOT foldable" << endl;
+//	}
+//	cout << "To find LCA: " << endl;
+	int value1, value2;
+	cout << "Enter data of node 1: ";
+	cin >> value1;
+	cout << "Enter data of node 2: ";
+	cin >> value2;
+	//Right now doing it with data values of node.
+	cout << "LCA of " << value1 << " & " << value2 << " : " << findLCA(root, value1, value2)->data << endl;
+
+
 	//Warning! Keep below section of code at the bottom of main() always since it messes up right and left pointers, destroying its BT structure!
 	node *head = NULL;
 	connectLeavesOfBTasDLL(root, head);
