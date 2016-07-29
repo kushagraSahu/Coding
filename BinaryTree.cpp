@@ -962,9 +962,42 @@ node *createSpecialTreeFromPreOrder(int preorder_list[], char preorder_property[
 	return root;
 }
 
+//Doubt
+node *createBTfromPreAndPostOrder(int preorder_list[], int postorder_list[], int start, int end, int *index_preorder){
+	if(start>end){
+		return NULL;
+	}
+	node *root=new node;
+	root->data = preorder_list[*index_preorder];
+	++*index_preorder;//Not Working if *index_preorder++ .
+	cout << "index_pre: " << root->data << endl;
+	cout << preorder_list[*index_preorder] << endl;
+	if(start==end){
+		return root;
+	}
+
+	int index_postorder;
+	for(index_postorder=start;index_postorder<=end;index_postorder++){
+		if(postorder_list[index_postorder] == preorder_list[*index_preorder]){
+			break;
+		}
+	}
+	if(index_postorder<=end){
+		root->left = createBTfromPreAndPostOrder(preorder_list, postorder_list, start, index_postorder, index_preorder);
+		root->right = createBTfromPreAndPostOrder(preorder_list, postorder_list, index_postorder+1, end-1, index_preorder);
+	}
+	return root;
+}
+
 int main(){
+	node *root;
+	int index_preorder = 0;
 	int inorder_list[] = {1, 5, 10, 40, 30, 15, 28, 20};
-	node *root = createSpecialTreeFromInorder(inorder_list, 0, 7);
+	int preorder_list[] = {1,2,4,8,9,5,3,6,7};
+	int postorder_list[] = {8,9,4,5,2,6,7,3,1};
+	root = createBTfromPreAndPostOrder(preorder_list, postorder_list, 0, length(preorder_list)-1, &index_preorder);
+	printLevelOrderBT(root);
+	root = createSpecialTreeFromInorder(inorder_list, 0, 7);
 	printLevelOrderBT(root);
 	root=NULL;
 	createBinaryTree(root);
