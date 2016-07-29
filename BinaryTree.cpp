@@ -792,7 +792,7 @@ node *findLCA(node *root, int value1, int value2){
 	return temp;
 }
 
-//Using Stack to print even levels in reverse.(Method 1) 
+//Using Stack to print even levels in reverse.(Method 1)
 void printTreeinZigZagPattern(node *root){
 	int count=1;
 	queue<node *> Q;
@@ -882,13 +882,96 @@ bool isBT1SubTreeOfBT2(node *root1, node *root2){
 	}
 }
 
+int search_index_inorder(int inorder_list[], int data, int start, int end){
+	int index=start;
+	while(index<=end){
+		if(inorder_list[index]==data){
+			return index;
+		}
+		index++;
+	}
+}
+
+node *createBTfromInAndPreOrder(node *root, int inorder_list[], int preorder_list[], int start, int end){
+	if(start>end){
+		return NULL;
+	}
+	static int preindex=0;
+	root = new node;
+	root->data = preorder_list[preindex];
+	preindex++;
+	root->left=root->right=NULL;
+	if(start==end){
+		return root;
+	}
+	int index_inorder = search_index_inorder(inorder_list, root->data, start, end);
+	//Left of root in inorder lies in Left subtree.
+	root->left=createBTfromInAndPreOrder(root->left, inorder_list, preorder_list, start, index_inorder-1);
+	//Right of root in inorder lies in Right subtree.
+	root->right=createBTfromInAndPreOrder(root->right, inorder_list, preorder_list, index_inorder+1, end);
+	return root;
+}
+
+
+//Initially sending arguments (arr, 0, len-1)
+node *createSpecialTreeFromInorder(int inorder_list[], int start, int end){
+	if(start > end){
+		return NULL;
+	}
+	int root_index, maxi=0;
+	for(int index=start;index<=end;index++){
+		if(inorder_list[index]>maxi){
+			maxi=inorder_list[index];
+			root_index = index;
+		}
+	}
+	node* root = new node;
+	root->data = inorder_list[root_index];
+	root->left=root->right=NULL;
+	if(start==end){
+		return root;
+	}
+	root->left = createSpecialTreeFromInorder(inorder_list, start, root_index-1);
+	root->right = createSpecialTreeFromInorder(inorder_list, root_index+1, end);
+	return root;
+}
+
+int length(int arr[]){
+	int i;
+	for(i=0;arr[i];i++){
+		i++;
+	}
+	return i;
+}
+
+node *createSpecialTreeFromPreOrder(int preorder_list[], char preorder_property[]){
+	static int index_preorder = 0;
+	int length_list = length(preorder_list);
+	if(index_preorder == length_list){
+		return NULL;
+	}
+	node *root = new node;
+	root->data = preorder_list[index_preorder];
+	if(preorder_property[index_preorder] == 'L'){
+		return root;
+	}
+	else{
+		root->left = createSpecialTreeFromPreOrder(preorder_list, preorder_property);
+		root->right = createSpecialTreeFromPreOrder(preorder_list, preorder_property);
+	}
+	return root;
+}
+
 int main(){
-	node *root = NULL;
+	int inorder_list[] = {1, 5, 10, 40, 30, 15, 28, 20};
+	node *root = createSpecialTreeFromInorder(inorder_list, 0, 7);
+	printLevelOrderBT(root);
+	root=NULL;
 	createBinaryTree(root);
 	cout << "Original BT:" << endl;
 	printLevelOrderBT(root);
 	cout << "DeepestLeftLeafNode: " << findDeepestLeftLeafNode(root)->data << endl;
-	
+
 	findMaxSumPathInBT(root);
 	if(checkChildrenSumPropertyInBT(root)){
 		cout << "Children Sum Property satisfied!" << endl;
