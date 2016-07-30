@@ -197,6 +197,56 @@ bool isTreeBST(node *root){
 	return temp;
 }
 
+//Method1
+node *findLCAinBST(node *root,int value1,int value2){
+    if(root->data>value1 && root->data>value2){
+        findLCAinBST(root->left,value1,value2);
+    }
+    else if(root->data<value1 && root->data<value2){
+        findLCAinBST(root->right,value1,value2);
+    }
+    else{
+        return root;
+    }
+}
+//Method2 for finding LCA is also same but using a while loop.
+
+void findKthSmallestElementInBST_helper(node *root, int *k, node *&targetNode){
+	if(isLeafNode(root)){
+		--*k;
+		if(*k==0){
+			targetNode = root;
+		}
+	}
+	else{
+		findKthSmallestElementInBST_helper(root->left, k, targetNode);
+		--*k;
+		if(*k==0){
+			targetNode = root;
+		}
+		findKthSmallestElementInBST_helper(root->right, k, targetNode);
+	}
+	return;
+}
+
+node *findKthSmallestElementInBST(node *root, int k){
+    int a = k;
+    node *targetNode=NULL;
+	findKthSmallestElementInBST_helper(root, &a, targetNode);
+	return targetNode;
+}
+
 int main(){
 	//All Functions-> DRY RUN.
+	node *root=NULL;
+	int value;
+    cout << "Enter no. to be inserted in Binary Search Tree. Enter -1 to exit insertion" << endl;
+    cin >> value;
+    while(value!=-1){
+        insertInBST_2(root,value);
+        cin >> value;
+    }
+    cout << "BST inserted is below." << endl;
+    printLevelOrderBST(root);
+    cout << "Kth smallest element in BST: " << findKthSmallestElementInBST(root, 4)->data << endl;
 }
